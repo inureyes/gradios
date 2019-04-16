@@ -10,15 +10,16 @@ Gradius clone for educational purpose.
 | Suelym Moon  | Student    |
 | Sejin Eom    | Student    |
 | Test         | Student    |
+| Seoyoung Kim| Student     |
 | Seongbin Park| Student    |
+| DongHyun Kim | Student    |
 | Junbeom Wi | Student  |
+| Test         | Student    |
 | Test         | Student    |
 | JunHo Choi   | Student    |
 | Jongmin Lee  | Student    |
-| Test         | Student    |
 | Hanseo An    | Student    |
 | Sungjae An| Student |
-| Test         | Student    |
 | Sangwon Park| Student |
 | Seungho Kim  | Student    |
 | Hochul Hwang | Student    |
@@ -30,6 +31,7 @@ Gradius clone for educational purpose.
 | Semyeong Lee|Student|
 | JaeSun Park  | Student   |
 | DongYeon Han | Student |
+| An yo Han    | Student   |
 
 ## Credit
 
