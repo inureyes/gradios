@@ -1,4 +1,4 @@
-# Gradios
+i# Gradios
 
 Gradius clone for educational purpose.
 
@@ -7,7 +7,7 @@ Gradius clone for educational purpose.
 | Name         |            |
 |--------------|------------|
 | Jeongkyu Shin| Maintainer |
-
+| ParkJinHyeok | student    |
 ## Credit
 
 Originally developed by https://github.com/dbinebrink/gradius
