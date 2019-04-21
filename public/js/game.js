@@ -41,6 +41,7 @@ var Game = {
         game.load.image('starfield', 'img/starfield.png');
         game.load.image('heart', 'img/heart.png');
         game.load.image('upper_mountain', 'img/upper_mountain.png');
+        ame.load.image('lower_mountain', 'img/lower_mountain.png');
         // load all sfx and music
         game.load.audio('music1', 'audio/gradius.mp3');
         game.load.audio('sfx_enemy_die', 'audio/enemy-die.wav');
@@ -87,6 +88,7 @@ var Game = {
         //  The scrolling starfield background
         starfield = game.add.tileSprite(0, 0, 900, 600, 'starfield');
         upper_mountain = game.add.tileSprite(0, 0, 900, 30, 'upper_mountain');
+        lower_mountain = game.add.tileSprite(0, 500, 900, 0, 'lower_mountain');
     
         //  The starship
         player = game.add.sprite(150, 300, 'ship');
@@ -170,6 +172,7 @@ var Game = {
         //  Scroll the background
         starfield.tilePosition.x -= 3;
         upper_mountain.tilePosition.x -= 1;
+        lower_mountain.tilePosition.x -= 1;
 
         // Pause the game with an alert
         if (easyPause.isDown){
