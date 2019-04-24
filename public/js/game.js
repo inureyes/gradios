@@ -29,7 +29,8 @@ var sfx_stage_clear;
 var easyPause;
 var speedup;
 var player_speed;
-var item_count=0;
+var power_up_count = 1;
+var power_up;
 var Game = {
 
     preload : function() {
@@ -43,6 +44,7 @@ var Game = {
         game.load.spritesheet('kaboom', 'img/explode.png', 128, 128);
         game.load.image('starfield', 'img/starfield.png');
         game.load.image('heart', 'img/heart.png');
+        game.load.image('power_up','img/power_up.png');
         game.load.image('upper_mountain', 'img/upper_mountain.png');
         game.load.image('lower_mountain', 'img/lower_mountain.png');
         // load all sfx and music
@@ -69,6 +71,7 @@ var Game = {
         stage = 1;
         player_speed = 200;
         stageString = '';
+        power_up_count = 1;
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -108,7 +111,7 @@ var Game = {
         bullets = game.add.group();
         bullets.enableBody = true;
         bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        bullets.createMultiple(30, 'bullet');
+        bullets.createMultiple(200, 'bullet', 100, false);
         bullets.setAll('anchor.x', 0.5);
         bullets.setAll('anchor.y', 1);
         bullets.setAll('outOfBoundsKill', true);
@@ -118,7 +121,7 @@ var Game = {
         enemyBullets = game.add.group();
         enemyBullets.enableBody = true;
         enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
-        enemyBullets.createMultiple(30, 'enemyBullet');
+        enemyBullets.createMultiple(200, 'enemyBullet', 100, false);
         enemyBullets.setAll('anchor.x', 0.5);
         enemyBullets.setAll('anchor.y', 1);
         enemyBullets.setAll('outOfBoundsKill', true);
@@ -152,6 +155,12 @@ var Game = {
         heart.enableBody = true;
         heart.physicsBodyType = Phaser.Physics.ARCADE;
 
+        // power_up
+        power_up = game.add.group();
+        power_up.enableBody = true;
+        power_up.physicsBodyType = Phaser.Physics.ARCADE;
+
+
         //speedup
         speedup = game.add.group();
         speedup.enableBody = true;
@@ -167,7 +176,7 @@ var Game = {
 
         //  An explosion pool
         explosions = game.add.group();
-        explosions.createMultiple(30, 'kaboom');
+        explosions.createMultiple(200, 'kaboom', 100, false);
         explosions.forEach(this.setupInvader, this);
 
         //  And some controls to play the game with
@@ -224,30 +233,16 @@ var Game = {
                 this.enemyFires();
             }
 
-            //Heart
-            var random = Math.random() * 1000;
-            if(random < 2){
-                var heart_1 = heart.create(game.width, Math.random() * 475 + 70,'heart');
-                heart_1.body.velocity.setTo(200,200);
-                heart_1.body.collideWorldBounds = true;
-                heart_1.body.bounce.set(1);
-            }
-
-            //speedUp
-            if((random*10) >=30 && (random*10)<50){
-                if(item_count <1){
-                    item_count +=1;
-                    var speedup_1 = speedup.create(Math.random() * (game.width/2), 100 + Math.random() * (game.height-200),'speedup');
-                }
-
-            }
-
             //  Run collision
             game.physics.arcade.overlap(bullets, aliens, this.collisionHandler, null, this);
             game.physics.arcade.overlap(bullets, enemyBullets, this.playerBreakEnemyBullet, null, this);
             game.physics.arcade.overlap(player, aliens, this.enemyHitsPlayer, null, this);
             game.physics.arcade.overlap(player, enemyBullets, this.enemyHitsPlayer, null, this);
+            game.physics.arcade.overlap(bullets, heart, this.changeItem, null, this);
+            game.physics.arcade.overlap(bullets, speedup, this.changeItem, null, this);
+            game.physics.arcade.overlap(bullets, power_up, this.changeItem, null, this);
             game.physics.arcade.overlap(player, heart, this.getHeart, null, this);
+            game.physics.arcade.overlap(player, power_up, this.getPower_up, null, this);
             game.physics.arcade.overlap(player, speedup, this.getSpeedup, null, this);
         }
     },
@@ -256,6 +251,10 @@ var Game = {
 
         for (var i = 0; i < stage*3; i++) {
             var alien = aliens.create(Math.random() * 290, Math.random() * 540, 'invader');
+            while(game.physics.arcade.overlap(alien, aliens)){
+                alien.kill();
+                alien = aliens.create(Math.random() * 290, Math.random() * 540, 'invader');
+            }
             alien.anchor.setTo(0.5, 0.5);
             alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
             alien.play('fly');
@@ -296,15 +295,18 @@ var Game = {
 
         //  To avoid them being allowed to fire too fast we set a time limit
         if (game.time.now > bulletTime) {
-            //  Grab the first bullet we can from the pool
-            bullet = bullets.getFirstExists(false);
 
-            if (bullet) {
-                sfx_fire.play();
-                //  And fire it
-                bullet.reset(player.x+8, player.y);
-                bullet.body.velocity.x = 400;
-                bulletTime = game.time.now + 200;
+            //  Grab the first bullet we can from the pool
+            for(var n = power_up_count; n > 0; n--){
+                bullet = bullets.getFirstExists(false);
+
+                if (bullet) {
+                    sfx_fire.play();
+                    //  And fire it
+                    bullet.reset(player.x + 8, player.y + Math.pow(-1, n) * 7 * n);
+                    bullet.body.velocity.x = 400;
+                    bulletTime = game.time.now + 200;
+                }
             }
         }
     },
@@ -312,6 +314,22 @@ var Game = {
     collisionHandler : function(bullet, alien) {
         //  When a bullet hits an alien we kill them both
         bullet.kill();
+
+        // hearts
+        if(Math.random() * 1000 < 20) {
+            var heart_1 = heart.create(alien.body.x, alien.body.y, 'heart');
+            game.physics.arcade.moveToObject(heart_1, player, 100 + 10 * stage);
+        }
+        // power
+        else if(Math.random() * 1000 < 20){
+            var power = power_up.create(alien.body.x, alien.body.y,'power_up');
+            game.physics.arcade.moveToObject(power, player, 100 + 10 * stage);
+        }
+        // speed up
+        else if(Math.random() * 1000 < 20){
+            var speedup_1 = speedup.create(alien.body.x, alien.body.y, 'speedup');
+            game.physics.arcade.moveToObject(speedup_1, player, 100 + 10 * stage);
+        }
         alien.kill();
 
         game.add.audio('sfx_enemy_die');
@@ -338,6 +356,25 @@ var Game = {
             stageText.text = stageString + stage;
 
         }
+    },
+
+    changeItem : function(bullet, object){
+        object.kill();
+        var random = Math.random();
+        if(random < 0.3){
+            var power = power_up.create(bullet.body.x, bullet.body.y,'power_up');
+            game.physics.arcade.moveToObject(power, player, 5 * stage);
+        }
+        else if(random < 0.6){
+            var speedup_1 = speedup.create(bullet.body.x, bullet.body.y, 'speedup');
+            game.physics.arcade.moveToObject(speedup_1, player, 5 * stage);
+
+        }
+        else{
+            var heart_1 = heart.create(bullet.body.x, bullet.body.y, 'heart');
+            game.physics.arcade.moveToObject(heart_1, player, 5 * stage);
+        }
+        bullet.kill();
     },
 
     playerBreakEnemyBullet : function(bullet, enemyBullet) {
@@ -376,7 +413,6 @@ var Game = {
         explosion.reset(player.body.x, player.body.y);
         explosion.play('kaboom', 30, false, true);
 
-        
         if (lives.countLiving() < 1) {
             countstage = 1;
             this.finishGame();
@@ -396,21 +432,28 @@ var Game = {
 
     getHeart: function(player, heart) {
         heart.kill();
+      
+        if (live_count < 3){
+	        for (var i = live_count; i >= 0; i--) {
+	            var ship = lives.create(game.world.width - 150 + (60 * i), 60, 'ship');
+	            ship.anchor.setTo(0.5, 0.5);
+	            ship.angle = 0;
+	            ship.alpha = 0.4;
+	        }
+	        for (var i = 0; i < live_count; i++)
+			{        
+				live = lives.getFirstAlive();
+	    	    if(live)
+	    	        live.kill();
+		    }
+		    live_count++;
+		}
+	},
 
-        if(live_count === 1){
-            var ship = lives.create(game.world.width - 150 + (60 * last--), 60, 'ship');
-            ship.anchor.setTo(0.5, 0.5);
-            ship.angle = 0;
-            ship.alpha = 0.4;
-            live_count++;
-        }
-        else if(live_count === 2){
-            var ship = lives.create(game.world.width - 150 + (60 * last--), 60, 'ship');
-            ship.anchor.setTo(0.5, 0.5);
-            ship.angle = 0;
-            ship.alpha = 0.4;
-            live_count++;
-        }
+    getPower_up: function(player, power_up){
+        power_up.kill();
+        power_up_count++;
+        if(power_up_count > 6) power_up_count = 6;
     },
 
     finishGame : function() {
@@ -467,9 +510,8 @@ var Game = {
 
     getSpeedup : function(player, speedup){
         speedup.kill();
-        item_count -=1;
         if(player_speed <340){
-            player_speed +=20;
+            player_speed += 20;
         }
     }
 
