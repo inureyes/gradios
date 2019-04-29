@@ -68,11 +68,7 @@ var Game = {
         // load the setting icon
         game.load.image('settingButton', 'img/settingButton.png');
         game.load.image('settingBack', 'img/settingBackground.png');
-        game.load.image('restartButton1','img/restartButton-1.png');
-        game.load.image('resumeButton', 'img/resumeButton.png');
-        game.load.image('mainMenu', 'img/mainMenu.png');
-        game.load.image('onButton', 'img/onButton.png');
-        game.load.image('offButton', 'img/offButton.png');
+
     },
 
     create  : function() {
@@ -97,7 +93,7 @@ var Game = {
         music.play();
 
 
-        //	Here we set-up our audio sprites
+        //  Here we set-up our audio sprites
         sfx_fire = game.add.audio('sfx_fire');
         sfx_fire.allowMultiple = false;
 
@@ -473,7 +469,7 @@ var Game = {
             countstage++;
             stage++;
             stageText.text = stageString + stage;
-		
+        
             
         }
     },
@@ -483,19 +479,22 @@ var Game = {
         var random = Math.random();
         if(random < 0.22){
             var power = power_up.create(bullet.body.x+30, bullet.body.y,'power_up');
-            //game.physics.arcade.moveToObject(power, player, 5 * stage);
+            game.physics.arcade.moveToObject(power, player, 5 * stage);
         }
         else if(random < 0.44){
             var speed_up_1 = speed_up.create(bullet.body.x+30, bullet.body.y, 'speed_up');
             //game.physics.arcade.moveToObject(speed_up_1, player, 5 * stage);
+
         }
         else if(random < 0.66){
             var score_2 = score_up_2.create(bullet.body.x+30, bullet.body.y, 'score_up_2');
             //game.physics.arcade.moveToObject(score_2, player, 5 * stage);
+
         }
         else if(random < 0.77){
             var score_3 = score_up_3.create(bullet.body.x+30, bullet.body.y, 'score_up_3');
             //game.physics.arcade.moveToObject(score_3, player, 5 * stage);
+
         }
         else{
             var heart_1 = heart.create(bullet.body.x+30, bullet.body.y, 'heart');
@@ -567,8 +566,8 @@ var Game = {
             live_count++;
             live = lives.getChildAt(max_live-live_count);
             live.alpha = 0.4;
-		}
-	},
+        }
+    },
 
      getPower_up: function(player, power_up){
         power_up.kill();
@@ -654,11 +653,11 @@ var Game = {
 
         var msgBox = game.add.group();
         var back = game.add.sprite(0,0,'settingBack');
-        var mainMenu = game.add.sprite(0, 0, 'mainMenu');
-        var restartButton1 = game.add.sprite(0, 0, 'restartButton1');
-        var resumeButton = game.add.sprite(0, 0, 'resumeButton');
-        var musicOnButton = game.add.sprite(0,0, 'onButton');
-        var musicOffButton = game.add.sprite(0,0,'offButton');
+        var mainMenu = game.add.text(0, 0, 'MAIN MENU');
+        var restartButton1 = game.add.text(0, 0, 'RESTART');
+        var resumeButton = game.add.text(0, 0, 'RESUME');
+        var musicOnButton = game.add.text(0,0, 'ON');
+        var musicOffButton = game.add.text(0,0,'OFF');
         var backgroundMusicText = game.add.text(0,0, 'BackgroundMusic');
 
         msgBox.add(back);
@@ -672,18 +671,24 @@ var Game = {
         msgBox.x = game.width / 2 - msgBox.width / 2;
         msgBox.y = game.height / 2 - msgBox.height / 2;
 
+        mainMenu.wordWrapWidth = back * 0.8;
+        mainMenu.addColor("#ffffff", 0);
         mainMenu.x = msgBox.width / 2 - mainMenu.width / 2;
-        mainMenu.y = msgBox.height - mainMenu.height*2.5;
+        mainMenu.y = msgBox.height - mainMenu.height*5;
         mainMenu.inputEnabled = true;
         mainMenu.events.onInputDown.add(this.goMenu,this);
-
+        
+        restartButton1.wordWrapWidth = back * 0.8;
+        restartButton1.addColor("#ffffff", 0);
         restartButton1.x = msgBox.width / 2 - restartButton1.width / 2;
-        restartButton1.y = msgBox.height - restartButton1.height*4;
+        restartButton1.y = msgBox.height - restartButton1.height*7.5;
         restartButton1.inputEnabled = true;
         restartButton1.events.onInputDown.add(this.startGame,this);
 
+        resumeButton.wordWrapWidth = back * 0.8;
+        resumeButton.addColor("#ffffff", 0);
         resumeButton.x = msgBox.width / 2 - resumeButton.width / 2;
-        resumeButton.y = msgBox.height - resumeButton.height*2;
+        resumeButton.y = msgBox.height - resumeButton.height*2.5;
         resumeButton.inputEnabled = true;
         resumeButton.events.onInputDown.add(this.hideBox,this);
 
@@ -692,11 +697,15 @@ var Game = {
         backgroundMusicText.y = msgBox.y;
         backgroundMusicText.addColor("#ffffff", 0);
 
+        musicOnButton.wordWrapWidth = back * 0.8;
+        musicOnButton.addColor("#ffffff", 0);
         musicOnButton.x = msgBox.width / 2 - musicOnButton.width - 10;
         musicOnButton.y = msgBox.y + backgroundMusicText.height;
         musicOnButton.inputEnabled = true;
         musicOnButton.events.onInputDown.add(this.turnOnMusic,this);
 
+        musicOffButton.wordWrapWidth = back * 0.8;
+        musicOffButton.addColor("#ffffff", 0);
         musicOffButton.x = msgBox.width / 2 + 10;
         musicOffButton.y = msgBox.y + backgroundMusicText.height;
         musicOffButton.inputEnabled = true;
@@ -732,4 +741,3 @@ var Game = {
     }
     
 }
-
