@@ -585,11 +585,11 @@ var Game = {
         result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
 
         if(seconds != 0 && seconds % 10 == 0) {
-            score += 100;
+            score += 100 * stage;
             scoreText.text = scoreString + score;
             setTimeout(function()
             {
-                var bonustext = game.add.text(game.world.centerX, game.world.centerY, "Bonus 100points", { font: '40px Arial', fill: '#ffffff' });
+                var bonustext = game.add.text(game.world.centerX, game.world.centerY, "Bonus"+100 * stage+"points", { font: '40px Arial', fill: '#ffffff' });
                 bonustext.anchor.setTo(0.5, 0.5);
                 setTimeout(function(){bonustext.destroy();}, 999);            
             }, 0);
