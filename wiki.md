@@ -8,7 +8,7 @@ gradios wiki 입니다.
 
 ### Gradios 실행 방법
 
-Gradios는 Node.js 를 기반으로 동작합니다. 실행하기 위해서는 Node.js의 설치와 실행이 필요합니다.
+Gradios는 Node.js의 gulp를 기반으로 동작합니다. 실행하기 위해서는 Node.js의 설치와 실행이 필요합니다.
 
 
 
@@ -63,7 +63,7 @@ gradios를 실행하려면 당연히 gradios 파일들이 필요합니다. 다�
 
    
 
-2. 아래 명령어를 통해 npm을 설치합니다.
+2. 아래 명령어를 통해 모듈들을 설치합니다.
 
    ```
    npm install
@@ -71,15 +71,25 @@ gradios를 실행하려면 당연히 gradios 파일들이 필요합니다. 다�
 
    
 
-3. 아래 명령어를 통해 node.js를 실행합니다.
+3. 아래 명령어를 통해 gulp를 설치합니다.
 
+   ```
+   npm install -g gulp
+   ```
+
+4. 아래 명령어를 통해 gulp를 실행합니다.
+
+   ```
+   gulp
+   ```
+   또는
    ```
    npm start
    ```
 
-   
 
-정상적으로 실행이 완료 되었다면, http://localhost:3000 이나 http://127.0,0,1:3000으로 접속하면 됩니다.
+
+정상적으로 실행이 완료 되었다면, http://localhost:3000 이나 http://127.0.0.1:3000 으로 접속하면 됩니다.
 
 
 
