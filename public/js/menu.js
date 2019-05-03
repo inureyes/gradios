@@ -20,7 +20,7 @@ var mainMenu = {
         game.stage.background = image;
         game.add.button(game.world.centerX-220,280,'startButton', this.startGame, this);
         game.add.button(game.world.centerX+20,280,'controls', this.ViewControls, this);
-        game.add.button(game.world.centerX-110,400,'exit', this.exit, this);
+        game.add.button(game.world.centerX-85,380,'exit', this.exit, this);
         easyStart = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         music = game.add.audio('start_sound');
         music.play();

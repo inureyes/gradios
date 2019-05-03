@@ -584,8 +584,15 @@ var Game = {
         //Display seconds, add a 0 to the start if less than 10
         result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
 
-        if(seconds % 10 == 0) {
+        if(seconds != 0 && seconds % 10 == 0) {
             score += 100;
+            scoreText.text = scoreString + score;
+            setTimeout(function()
+            {
+                var bonustext = game.add.text(game.world.centerX, game.world.centerY, "Bonus 100points", { font: '40px Arial', fill: '#ffffff' });
+                bonustext.anchor.setTo(0.5, 0.5);
+                setTimeout(function(){bonustext.destroy();}, 999);            
+            }, 0);
         }
 
         me.timeLabel.text = result;
