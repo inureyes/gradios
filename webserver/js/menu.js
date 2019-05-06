@@ -39,10 +39,11 @@ var mainMenu = {
         this.state.start('Game');
     },
 
-
     ViewControls : function() {
-       game.add.button(0,360,'controlkey', this.ViewControls, this);
-       game.add.button(805,360,'backButton', this.create, this);
+        var image2 = game.add.image(0,360,'controlkey');
+        var image3 = game.add.button(805,360,'backButton');
+        image3.inputEnabled = true;
+        image3.events.onInputDown.add(function(){image2.destroy();image3.destroy();});
     },
 
     exit : function(){

@@ -89,6 +89,7 @@ Refer : https://github.com/inureyes/gradios/blob/master/wiki.md
 | Wonbae Kim | Student |
 | Yelim Park | student |
 | Yerim Seok | Student |
+| Jae Hyeon Park| Student|
 
 
 ## Credit
