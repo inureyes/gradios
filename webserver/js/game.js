@@ -23,6 +23,8 @@ var music;
 var sfx_fire;
 var sfx_enemy_die;
 var sfx_get_item;
+var sfx_stage_clear;
+var sfx_player_hit;
 var heart;
 var shield;
 var isShield = false;
@@ -31,7 +33,6 @@ var first = 0;
 var stage = 1;
 var stageString = '';
 var stageText;
-var sfx_stage_clear;
 var speedup;
 var player_speed;
 var power_up_count = 1;
@@ -107,28 +108,28 @@ var Game = {
         bulletsCollision_status = 'ON';
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        music = game.add.audio('music1');
+        if (!music) music = game.add.audio('music1');
         music.volume = 0.5;
         music.play();
 
         //  Here we set-up our audio sprites
-        sfx_fire = game.add.audio('sfx_fire');
+        if (!sfx_fire) sfx_fire = game.add.audio('sfx_fire');
         sfx_fire.volume = 0.5;
         sfx_fire.allowMultiple = false;
 
-        sfx_stage_clear = game.add.audio('sfx_stage_clear');
+        if (!sfx_stage_clear) sfx_stage_clear = game.add.audio('sfx_stage_clear');
         sfx_stage_clear.volume = 0.5;
         sfx_stage_clear.allowMultiple = true;
 
-        sfx_player_hit = game.add.audio('sfx_player_hit');
+        if (!sfx_player_hit) sfx_player_hit = game.add.audio('sfx_player_hit');
         sfx_player_hit.volume = 0.5;
         sfx_player_hit.allowMultiple = true;
 
-        sfx_enemy_die = game.add.audio('sfx_enemy_die');
+        if (!sfx_enemy_die) sfx_enemy_die = game.add.audio('sfx_enemy_die');
         sfx_enemy_die.volume = 0.5;
         sfx_enemy_die.allowMultiple = true;
 
-        sfx_get_item = game.add.audio('sfx_get_item');
+        if (!sfx_get_item) sfx_get_item = game.add.audio('sfx_get_item');
         sfx_get_item.volume = 0.5;
         sfx_get_item.allowMultiple = true;
 
@@ -466,8 +467,6 @@ var Game = {
     },
 
     fireBullet : function() {
-        game.add.audio('sfx_fire');
-
         //  To avoid them being allowed to fire too fast we set a time limit
         if (game.time.now > bulletTime) {
 
@@ -506,7 +505,6 @@ var Game = {
         }
         alien.damage(1);
 
-        game.add.audio('sfx_enemy_die');
         sfx_enemy_die.play();
 
         //  Increase the score
@@ -531,7 +529,6 @@ var Game = {
 
         if (aliens.countLiving() === 0 && ailencreatecount >= stage*10) {
             aliens.removeAll();
-            game.add.audio('stage_clear');
             sfx_stage_clear.play();
 
             this.createAliens();
@@ -631,7 +628,6 @@ var Game = {
         bullet.kill();
         enemyBullet.kill();
 
-        game.add.audio('sfx_enemy_die');
         sfx_enemy_die.play();
 
         var explosion = explosions.getFirstExists(false);
@@ -645,7 +641,6 @@ var Game = {
         }
         if (isShield) {
             if ((game.time.now < player.invincibleTime)) {
-                game.add.audio('sfx_enemy_die');
                 sfx_enemy_die.play();
                 object.kill()
 
@@ -661,7 +656,6 @@ var Game = {
         else {
             if ((game.time.now < player.invincibleTime) || !aliens.countLiving()) return;
         }
-        game.add.audio('sfx_player_hit');
         sfx_player_hit.play();
         object.kill();
 
@@ -688,7 +682,6 @@ var Game = {
         }
 
         if (aliens.countLiving() === 0 && ailencreatecount >= stage*10) {
-            game.add.audio('stage_clear');
             sfx_stage_clear.play();
             this.createAliens();
             countstage++;
