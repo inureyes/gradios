@@ -678,6 +678,8 @@ var Game = {
 
         if (live_count < 1) {
             countstage = 1;
+            seconds = 0;
+            minutes = 0;
             this.finishGame();
         }
 
@@ -1070,8 +1072,6 @@ var Game = {
         yes.events.onInputDown.add(this.goMenu,this);
         no.events.onInputDown.add(this.hideBox1,this);        
         this.msgBox1 = msgBox1;
-        minutes = 0;
-        seconds = 0;
     },
 
     turnOnMusic : function(){
