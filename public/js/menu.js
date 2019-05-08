@@ -33,6 +33,7 @@ var mainMenu = {
     },
 
     startGame : function() {
+        this.emptyItems();  
         music.stop();
         this.state.start('Game');
     },
@@ -40,5 +41,9 @@ var mainMenu = {
     ViewControls : function() {
        game.add.button(220,360,'controlkey', this.ViewControls, this);
        game.add.button(600,360,'backButton', this.create, this);
+    },
+
+    emptyItems : function() {
+        items = [];
     },
 }
