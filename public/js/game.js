@@ -509,7 +509,7 @@ var Game = {
     },
 
     makeRandomItem : function(x, y, x_vel = 0, y_vel = 0){
-        console.log(x,y,x_vel,y_vel);
+        // console.log(x,y,x_vel,y_vel);
         var random = Math.random();
         var item;
         if(random < 0.22){
@@ -641,7 +641,6 @@ var Game = {
     },
 
     finishGame : function() {
-        
         player.kill();
 
         music.stop();
