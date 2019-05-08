@@ -44,6 +44,8 @@ var score_up_3;
 var score_3_switch = false;
 var debugFlag = false;
 var bulletsCollision = true;
+var items = [];
+
 var Game = {
 
     preload : function() {
@@ -214,7 +216,7 @@ var Game = {
 
     },
 
-    update : function() {
+    update : function() {           
 
         //  Scroll the background
         starfield.tilePosition.x -= 3;
@@ -229,7 +231,7 @@ var Game = {
         }
 
         if (player.alive) {
-            //  Reset the player, then check for movement keys
+            //  Reset the player, then check for movement keys            
             player.body.velocity.setTo(0, 0);
 
             if(cursors.left.isDown && (40 < player.x) && cursors.up.isDown && (40 < player.y)){
@@ -288,6 +290,8 @@ var Game = {
             }
 
             //  Run collision
+            this.itemMovement()
+
             game.physics.arcade.overlap(bullets, aliens, this.collisionHandler, null, this);
             if (bulletsCollision){
                 game.physics.arcade.overlap(bullets, enemyBullets, this.playerBreakEnemyBullet, null, this);
@@ -388,6 +392,38 @@ var Game = {
         // game.debug.body(aliens.getFirstAlive());
     },
 
+    //itemMovement control
+    itemMovement : function() {
+        console.log(items);
+        for(var i = 0; i < items.length; i++) {                    
+        
+            if (items[i].alive === false) {
+                items.splice(i,1);
+            }
+
+            if (!items[i] || !items[i].body) {
+                continue;
+            }
+
+            if (items[i].body.y < 0) {
+                items[i].body.velocity.y *= -1;
+            }
+            if (items[i].body.y >= 600 - items[i].body.height) {
+                items[i].body.velocity.y *= -1;
+            }
+            if (items[i].body.x < 0) {
+                items[i].body.velocity.x *= -1;
+            }
+            if (items[i].body.x >= 900 - items[i].body.width) {
+                items[i].body.velocity.x *= -1;
+            }
+        }
+    },
+
+    emptyItems : function() {
+        items = [];
+    },
+
     fireBullet : function() {
         game.add.audio('sfx_fire');
         sfx_fire.volume = 0.2;
@@ -417,7 +453,7 @@ var Game = {
         }
     },
 
-    collisionHandler : function(bullet, alien) {
+    collisionHandler : function(bullet, alien) {        
 
         if (debugFlag){
             this.debugCollisionMessage(bullet, alien);
@@ -426,7 +462,7 @@ var Game = {
         bullet.kill();
 
         if(Math.random() * 1000 < 20) {
-            this.makeRandomItem(alien.body.x, alien.body.y, -200, (Math.random()*2-1)*200 );
+            items.push(this.makeRandomItem(alien.body.x, alien.body.y, -200, (Math.random()*2-1)*200 ));
         }
         alien.kill();
 
@@ -512,7 +548,7 @@ var Game = {
         var x = object.x;
         var y = object.y;
         object.kill();
-        var item = this.makeRandomItem(x, y, x_vel, y_vel);
+        items.push(this.makeRandomItem(x, y, x_vel, y_vel));
         bullet.kill();
     },
 
@@ -815,6 +851,7 @@ var Game = {
     startGame : function() {
         //this.Game.destroy();
         //this.msgBox.destroy();
+        this.emptyItems();
         game.paused = false;
         music.stop();
         game.state.start('Game');
