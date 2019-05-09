@@ -260,7 +260,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/node,macos,windows,webstorm,sublimetext
+# End of https://www.gitignore.io/api/	,macos,windows,webstorm,sublimetext
 
 # ignore .idea
 .idea/
