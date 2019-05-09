@@ -24,6 +24,7 @@ var mainMenu = {
         game.add.button(game.world.centerX-85,380,'exit', this.exit, this);
         easyStart = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         if (!start_music) start_music = game.add.audio('start_sound');
+        start_music.loop = true;
         start_music.play();
     },
 

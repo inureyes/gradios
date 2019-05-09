@@ -53,6 +53,8 @@ var Player = {
     
     setPlayerSprite : function(){
         // Todo 아직 maxHealth가 늘어나지 않음 수정 필요
+        this.sprite.loadTexture(this.info.image, 0);
+        
         this.sprite.maxHealth = this.info.maxHealth;
         this.sprite.body.setSize(64,32,0,16);
         this.info.animation(this.sprite);

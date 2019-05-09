@@ -219,12 +219,22 @@ playerSpeedUp_item.addAbility("Player", "changeParameter", "speed", x => x+10);
 
 let superArmer_item = new item("superArmor", "common");
 superArmer_item.addAbility("Player", "changeParameter", "invincibleTime", x => game.time.now + 5000);
+superArmer_item.addAbility("Player", "changeParameter", "image", x =>{
+    game.time.events.add(Phaser.Timer.SECOND * 5, function() {
+        Player.sprite.loadTexture('ship', 0);
+        superArmer_item.removeItem(myItemList);
+    }, this);
+    return 'armerShip';
+});
 
 let damageUP_item = new item("damageUp", "common");
 damageUP_item.addAbility("Bullets", "changeParameter", "damage", x => x+1);
 
 let Heart_item = new item("heart", "common");
-Heart_item.addAbility("Player", "changeParameter", "healthUp", x => Player.heal(1));
+Heart_item.addAbility("Player", "changeParameter", "healthUp", x => {
+    Player.heal(1);
+    Heart_item.removeItem(myItemList);
+});
 
 let GLP_800_item = new item("GLP-800", "uncommon");
 GLP_800_item.makeActive();
