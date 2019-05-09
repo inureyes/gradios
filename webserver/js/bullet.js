@@ -13,24 +13,26 @@ var Bullets = {
             "beforeFire", "firing", "afterFire", "hitEnemy", "always"
         ],
     },
-    info : {
-        /*
-        if collect item, item's ability function is stored in this list
-        and activate function when it's position
-        */
-        beforeFire:{},
-        firing:{},
-        afterFire:{},
-        always:{},
-    },
+    info : {},
     
     initalize : function( game ){
         this.bulletTime = 0;
         this.currentShotCount = 0;
 
+        this.initalizeInfo();
+        
+        this.bulletGroup = game.add.group();
+        this.bulletGroup.enableBody = true;
+        this.bulletGroup.physicsBodyType = Phaser.Physics.ARCADE;
+        this.bulletGroup.setAll('anchor.x', 0.5);
+        this.bulletGroup.setAll('anchor.y', 1);
+        this.setBulletGroup();
+    },
+
+    initalizeInfo : function(){
         this.info.image = 'bullet';
         this.info.damage = 1;
-        this.info.fireRate = 0.6;
+        this.info.fireRate = 0.5;
         this.info.penetration = 1;
         this.info.maxBulletCount = 100;
         this.info.speed = 6;
@@ -39,7 +41,7 @@ var Bullets = {
         this.info.outOfBoundsKill = true;
         this.info.checkWorldBounds = true;
         this.info.initValue = {
-            position : {x : 40, y : 0},
+            position : {x : 20, y : 0},
             velocity : {x : this.info.speed*100, y : 0}
         }
         
@@ -51,13 +53,6 @@ var Bullets = {
         for([index, addFunction] of Object.entries(this.tagList.addFunction)){
             this.info[addFunction] = {};
         }
-        
-        this.bulletGroup = game.add.group();
-        this.bulletGroup.enableBody = true;
-        this.bulletGroup.physicsBodyType = Phaser.Physics.ARCADE;
-        this.bulletGroup.setAll('anchor.x', 0.5);
-        this.bulletGroup.setAll('anchor.y', 1);
-        this.setBulletGroup();
     },
     
     setBulletGroup : function(){
@@ -68,23 +63,34 @@ var Bullets = {
         Bullets.bulletGroup.forEach((x, y) => {x.penetration = y;}, this, false, this.info.penetration);
         return this.bulletGroup;
     },
+
     //todo : itemFormat.js에 맟춰 수정하기
-    addItem : function(getItem){
-        console.log(getItem);
-        let itemAbilites = getItem.abilities.Bullets;
-        for( [key, value] of Object.entries(itemAbilites.changeParameter) ){
-            this.info[key] = value(this.info[key]);
-        }
-        for( [key, value] of Object.entries(itemAbilites.changeFunction) ){
-            this.info[key] = value;
-        }
-        for( [key, value] of Object.entries(itemAbilites.addFunction) ){
-            for(var i=0; i<value.length; i++){
-                if(!this.info[key][value[i].priority]){
-                    this.info[key][value[i].priority] = [];
+    applyItems : function(myItemList){
+        this.initalizeInfo();
+
+        for( [itemIndex, itemCount] of Object.entries(myItemList)){
+            let getItem = itemList[itemIndex];
+            let itemAbilites = getItem.abilities.Bullets;
+
+            for( [key, value] of Object.entries(itemAbilites.changeFunction) ){
+                this.info[key] = value;
+            }
+            for( [key, value] of Object.entries(itemAbilites.addFunction) ){
+                for(functionPriority in value){
+                    if(!this.info[key][functionPriority]){
+                        this.info[key][functionPriority] = [];
+                    }
+                    for(i in value[functionPriority]){
+                        this.info[key][functionPriority].push(value[functionPriority][i]);
+                    }
+                } 
+            }
+            
+            for( let i = 0; i < itemCount; i++){
+                for( [key, value] of Object.entries(itemAbilites.changeParameter) ){
+                    this.info[key] = value(this.info[key]);
                 }
-                this.info[key][value[i].priority].push(value[i].function);
-            } 
+            }
         }
         
         this.setBulletGroup();

@@ -10,26 +10,10 @@ var Player = {
             "always", "colideEnemy", "moving"
         ]
     },
-    info : {
-        always : {},
-        colideEnemy : {},
-        moving : {}
-    },
+    info : {},
 
     initalize : function( game ) {
-        this.info.image = 'ship';
-        this.info.speed = 200;
-        this.info.maxHealth = 3;
-        this.info.evasion = 0; // 0~100까지의 숫자로 풀레이어의 총알 회피 확률을 나타냄
-        this.info.invincibleTime = 0;
-        this.info.animation = function(obj){
-            obj.animations.add('up', [3, 4], 2, false);
-            obj.animations.add('down', [0, 1], 2, false);
-        }
-
-        for([index, addFunction] of Object.entries(this.tagList.addFunction)){
-            this.info[addFunction] = {};
-        }
+        this.initalizeInfo();
 
         this.healthGroup = game.add.group();
         for (var i = this.info.maxHealth-1; i >= 0; i--) {
@@ -46,6 +30,25 @@ var Player = {
         this.sprite.anchor.setTo(0.5, 0.5);
         this.setPlayerSprite();
         this.sprite.setHealth(this.info.maxHealth);
+
+        this.activeItem = null;
+        this.currentResource = 0;
+    },
+
+    initalizeInfo : function(){
+        this.info.image = 'ship';
+        this.info.speed = 200;
+        this.info.maxHealth = 3;
+        this.info.evasion = 0; // 0~100까지의 숫자로 풀레이어의 총알 회피 확률을 나타냄
+        this.info.invincibleTime = 0;
+        this.info.animation = function(obj){
+            obj.animations.add('up', [3, 4], 2, false);
+            obj.animations.add('down', [0, 1], 2, false);
+        }
+
+        for([index, addFunction] of Object.entries(this.tagList.addFunction)){
+            this.info[addFunction] = {};
+        }
     },
     
     setPlayerSprite : function(){
@@ -54,7 +57,7 @@ var Player = {
         this.sprite.body.setSize(64,32,0,16);
         this.info.animation(this.sprite);
         this.sprite.update = () => {
-            if (Player.sprite.alive) {
+            if(Player.sprite.alive){
                 for( functionPriority in Player.info.always ){
                     let currentFunctionList = Player.info.always[functionPriority];
                     for( functionIndex in currentFunctionList )
@@ -63,27 +66,43 @@ var Player = {
 
                 Player.move(cursors);
 
-                if (fireButton.isDown) {
+                if(fireButton.isDown){
                     Bullets.fire(Player.sprite, game.time.now);
+                }
+
+                if(activeButton.justDown){
+                    activeItem.activate();
                 }
             }
         }
     },
-    addItem : function(getItem){
-        let itemAbilites = getItem.abilities.Player;
-        for( [key, value] of Object.entries(itemAbilites.changeParameter) ){
-            this.info[key] = value(this.info[key]);
-        }
-        for( [key, value] of Object.entries(itemAbilites.changeFunction) ){
-            this.info[key] = value;
-        }
-        for( [key, value] of Object.entries(itemAbilites.addFunction) ){
-            for(var i=0; i<value.length; i++){
-                if(!this.info[key][value[i].priority]){
-                    this.info[key][value[i].priority] = [];
+
+    applyItems : function(myItemList){
+        this.initalizeInfo();
+
+        for( [itemIndex, itemCount] of Object.entries(myItemList)){
+            let getItem = itemList[itemIndex];
+            let itemAbilites = getItem.abilities.Player;
+
+            for( [key, value] of Object.entries(itemAbilites.changeFunction) ){
+                this.info[key] = value;
+            }
+            for( [key, value] of Object.entries(itemAbilites.addFunction) ){
+                for(functionPriority in value){
+                    if(!this.info[key][functionPriority]){
+                        this.info[key][functionPriority] = [];
+                    }
+                    for(i in value[functionPriority]){
+                        this.info[key][functionPriority].push(value[functionPriority][i]);
+                    }
+                } 
+            }
+            
+            for( let i = 0; i < itemCount; i++){
+                for( [key, value] of Object.entries(itemAbilites.changeParameter) ){
+                    this.info[key] = value(this.info[key]);
                 }
-                this.info[key][value[i].priority].push(value[i].function);
-            } 
+            }
         }
         
         this.setPlayerSprite();
