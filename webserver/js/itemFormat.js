@@ -11,7 +11,7 @@ class UndefinedTypeError {
 itemAbilityTags = {
     "Player" : {
         "changeParameter" : [
-            "maxHealth", "evasion", "speed", "image", "invincibleTime", "healthUp", "activeItemOn"
+            "maxHealth", "evasion", "speed", "image", "invincibleTime", "isInvincible", "healthUp", "activeItemOn"
         ],
         "changeFunction" : [
             "animation"
@@ -226,6 +226,12 @@ superArmer_item.addAbility("Player", "changeParameter", "image", x =>{
     }, this);
     return 'armerShip';
 });
+superArmer_item.addAbility("Player", "changeParameter", "isInvincible", x => {
+    x = true;
+    setTimeout(() => {
+        x = false;
+    }, 5000)
+})
 
 let damageUP_item = new item("damageUp", "common");
 damageUP_item.addAbility("Bullets", "changeParameter", "damage", x => x+1);

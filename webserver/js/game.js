@@ -494,12 +494,12 @@ var Game = {
             this.debugCollisionMessage(player, object);
         }
         // console.log(Player.info.invincibleTime + " " + game.time.now);
-        if ((game.time.now < Player.info.invincibleTime) || !aliens.countLiving()) return;
+        if (((game.time.now < Player.info.invincibleTime) && Player.info.isInvinsible == false) || !aliens.countLiving()) return;
         // console.log(1);
         game.add.audio('sfx_player_hit');
         sfx_player_hit.volume = 0.6;
         sfx_player_hit.play();
-        Player.damage(1);
+        if (Player.info.isInvinsible == false) Player.damage(1);
 
         object.kill();
 
@@ -515,10 +515,6 @@ var Game = {
             this.finishGame();
         }
 
-        Player.info.invincibleTime = game.time.now + 1000;
-        // blink player
-        game.add.tween(player).to( { alpha : 0.2 }, 250, Phaser.Easing.Linear.None, true, 0, 1, true);
-        
         if (aliens.countLiving() === 0 && ailencreatecount >= stage*10) {
             sfx_stage_clear.play();
             this.createAliens();
@@ -534,6 +530,10 @@ var Game = {
         }
         score_2_switch = false;
         score_3_switch = false;
+
+        Player.info.invincibleTime = game.time.now + 1000;
+        // blink player
+        if (Player.info.isInvinsible == false) game.add.tween(player).to( { alpha : 0.2 }, 250, Phaser.Easing.Linear.None, true, 0, 1, true);
     },
 
     finishGame : function() {
