@@ -41,7 +41,7 @@ var Player = {
         this.info.maxHealth = 3;
         this.info.evasion = 0; // 0~100까지의 숫자로 풀레이어의 총알 회피 확률을 나타냄
         this.info.invincibleTime = 0;
-        this.info.isInvincivle = false;
+        this.info.isInvincible = false;
         this.info.animation = function(obj){
             obj.animations.add('up', [3, 4], 2, false);
             obj.animations.add('down', [0, 1], 2, false);
