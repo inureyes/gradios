@@ -17,9 +17,10 @@ var Player = {
 
         this.healthGroup = game.add.group();
         for (var i = this.info.maxHealth-1; i >= 0; i--) {
-            var health = this.healthGroup.create(game.world.width - 150 + (60 * i), 60, 'heart');
-            health.anchor.setTo(0.5, 0.5);
-            health.angle = 0;
+            var ship = this.healthGroup.create(game.world.width - 150 + (60 * i), 60, this.info.image);
+            ship.anchor.setTo(0.5, 0.5);
+            ship.angle = 0;
+            ship.alpha = 0.4;
         }
         game.add.text(game.world.width - 100, 10, 'Health: ', { font: '24px Arial', fill: '#fff' });
 
