@@ -28,9 +28,9 @@ Global installation:
 electron-packager . --ignore=node_modules/electron-packager --ignore=.git --overwrite --ignore="\.git(ignore|modules)" --out=app --platform=[darwin OR win32 OR linux]
 ```
 
-Global installation in Window: 
+Global installation in Window PowerShell: 
 ```
-electron-packager . --ignore=node_modules/electron-packager --ignore=.git --overwrite --ignore="\.git(ignore||modules)" --out=app --platform=[darwin OR win32 OR linux]
+electron-packager . --ignore=node_modules/electron-packager --ignore=.git --overwrite  --out=app --platform="win32" --ignore=`""\.git(ignore^|modules)`""
 ```
 
 Local electron-packager installation: 
